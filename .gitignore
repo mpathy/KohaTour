@@ -1,0 +1,12 @@
+# Mockup / Prototyp-Dateien (nicht Teil des Plugins)
+tour.html
+index.html
+tour.yaml
+
+# Claude Code / Editor
+.claude/
+.vstags
+CLAUDE.md
+
+# Build-Artefakte
+*.kpz

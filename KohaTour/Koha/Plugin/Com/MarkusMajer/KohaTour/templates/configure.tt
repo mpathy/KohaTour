@@ -1,0 +1,325 @@
+[% USE raw %]
+[% USE Asset %]
+[% PROCESS 'i18n.inc' %]
+[% SET footerjs = 1 %]
+
+[% INCLUDE 'doc-head-open.inc' %]
+<title>KohaTour — Konfiguration</title>
+[% Asset.css("lib/codemirror/codemirror.min.css") | $raw %]
+<style>
+    .json-editor-wrapper {
+        margin: 10px 0;
+    }
+
+    .json-editor-wrapper .CodeMirror {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        height: 400px;
+        font-size: 13px;
+    }
+
+    #jsonStatus {
+        display: none;
+        margin: 10px 0;
+        padding: 12px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+
+    .action-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+</style>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+
+<body id="plugin_kohatour_configure" class="plugins">
+[% WRAPPER 'header.inc' %]
+[% END %]
+
+[% WRAPPER 'sub-header.inc' %]
+    [% WRAPPER breadcrumbs %]
+        [% WRAPPER breadcrumb_item %]
+            <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
+        [% END %]
+        [% WRAPPER breadcrumb_item bc_active=1 %]
+            KohaTour
+        [% END %]
+    [% END %]
+[% END %]
+
+<div class="main container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+
+            <h1>KohaTour — Konfiguration</h1>
+
+            [% IF saved %]
+            <div class="alert alert-success">Konfiguration gespeichert.</div>
+            [% END %]
+            [% IF reset_done %]
+            <div class="alert alert-success">
+                „Nie wieder fragen" wurde für alle Rechner zurückgesetzt.
+                Beim nächsten Seitenaufruf wird der Tour-Banner wieder angezeigt.
+            </div>
+            [% END %]
+            [% IF reset_default %]
+            <div class="alert alert-success">Konfiguration auf Standard zurückgesetzt.</div>
+            [% END %]
+
+            <!-- ── Tour-Konfiguration (JSON-Editor) ── -->
+            <form method="post">
+                <input type="hidden" name="class" value="[% CLASS %]" />
+                <input type="hidden" name="method" value="[% METHOD %]" />
+
+                <fieldset>
+                    <legend>Tour-Konfiguration (JSON)</legend>
+                    <p>Definieren Sie hier die Touren und deren Schritte:</p>
+
+                    <div class="json-editor-wrapper">
+                        <textarea name="tour_config" id="tourConfigInput">[% tour_config | html %]</textarea>
+                    </div>
+
+                    <div id="jsonStatus"></div>
+                </fieldset>
+
+                <div class="action-toolbar">
+                    <div class="action-group">
+                        <input type="submit" name="save" id="saveBtn" value="Speichern" class="btn btn-primary" />
+                    </div>
+                    <div class="action-group">
+                        <input type="submit" name="reset_default" value="Auf Standard zurücksetzen"
+                               class="btn btn-default"
+                               onclick="return confirm('Wirklich auf die Standardkonfiguration zurücksetzen? Ihre aktuelle Konfiguration geht verloren.');" />
+                    </div>
+                    <div class="action-group">
+                        <input type="button" id="downloadConfig" value="Konfiguration herunterladen" class="btn btn-default" />
+                        <input type="button" id="uploadConfig" value="Konfiguration hochladen" class="btn btn-default" />
+                        <input type="file" id="uploadConfigFile" accept=".json" style="display: none;" />
+                    </div>
+                    <div class="action-group">
+                        <a href="/cgi-bin/koha/plugins/plugins-home.pl" id="cancelBtn" class="btn btn-default">Abbrechen</a>
+                    </div>
+                </div>
+            </form>
+
+            <!-- ── „Nie wieder fragen" zurücksetzen ── -->
+            <fieldset style="margin-top: 40px;">
+                <legend>Tour-Erinnerung zurücksetzen</legend>
+                <p>
+                    Wenn ein Benutzer auf einem Rechner <strong>„Nie wieder fragen"</strong> geklickt hat,
+                    wird der Tour-Banner auf diesem Rechner dauerhaft ausgeblendet (gespeichert im Browser-LocalStorage).
+                </p>
+                <p>
+                    <strong>Zurücksetzen für alle Rechner:</strong>
+                    Dieser Button setzt einen globalen Zeitstempel in der Koha-Datenbank.
+                    Beim nächsten Seitenaufruf erkennen alle Browser, dass ihr lokaler Eintrag veraltet ist,
+                    und blenden den Banner wieder ein.
+                </p>
+                <p>
+                    <strong>Zurücksetzen für einen einzelnen Rechner / Browser:</strong>
+                    Browserdaten für diese Website löschen (Einstellungen → Datenschutz → Website-Daten löschen).
+                </p>
+
+                <form method="post" style="margin-top: 1rem;">
+                    <input type="hidden" name="class" value="[% CLASS %]" />
+                    <input type="hidden" name="method" value="[% METHOD %]" />
+                    <button type="submit" name="reset_never" value="1" class="btn btn-warning"
+                            onclick="return confirm('Wirklich für alle Rechner zurücksetzen?');">
+                        „Nie wieder fragen" für alle Rechner zurücksetzen
+                    </button>
+                </form>
+            </fieldset>
+
+            <!-- ── Dokumentation ── -->
+            <fieldset style="margin-top: 40px;">
+                <legend>Dokumentation</legend>
+
+                <h3>So funktioniert KohaTour</h3>
+                <p>
+                    KohaTour blendet auf jeder Seite des Staff Interface einen Banner ein,
+                    wenn in der Konfiguration eine Tour für den aktuellen URL-Pfad definiert ist.
+                    Die Benutzer können die Tour starten, ablehnen oder dauerhaft ausblenden.
+                </p>
+
+                <h3>JSON-Struktur</h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Feld</th>
+                            <th style="width: 50%;">Beschreibung</th>
+                            <th style="width: 35%;">Beispiel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>tours</strong></td>
+                            <td>Array aller Touren. Jede Tour ist einer bestimmten Seite zugeordnet.</td>
+                            <td><code>"tours": [{ ... }, { ... }]</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>path</strong></td>
+                            <td>Der URL-Pfad der Zielseite (ohne Query-Parameter). Muss exakt mit <code>window.location.pathname</code> übereinstimmen.</td>
+                            <td><code>"/cgi-bin/koha/mainpage.pl"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>name</strong></td>
+                            <td>Ein sprechender Name für die Tour (wird aktuell nur in der Konfiguration angezeigt).</td>
+                            <td><code>"Einführung Erwerbungsmodul"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>steps</strong></td>
+                            <td>Array der einzelnen Tour-Schritte. Jeder Schritt hebt ein Element auf der Seite hervor.</td>
+                            <td><code>"steps": [{ ... }]</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>xpath</strong></td>
+                            <td>XPath-Ausdruck, der das Ziel-Element auf der Seite identifiziert. Am einfachsten per Browser-DevTools ermitteln (siehe unten).</td>
+                            <td><code>"//*[@id='navmenulist']"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>title</strong></td>
+                            <td>Überschrift des Tour-Schritts (wird im Popover fett dargestellt).</td>
+                            <td><code>"Hauptnavigation"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>body</strong></td>
+                            <td>Beschreibungstext des Tour-Schritts.</td>
+                            <td><code>"Die Navigationsleiste gibt Ihnen Zugang zu allen Modulen."</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>XPath ermitteln (ohne Programmierkenntnisse)</h3>
+                <ol>
+                    <li>Zielseite im Browser öffnen</li>
+                    <li>Rechtsklick auf das gewünschte Element → <strong>Untersuchen</strong></li>
+                    <li>Im DevTools-Panel: Rechtsklick auf den markierten HTML-Tag → <strong>Copy</strong> → <strong>Copy XPath</strong></li>
+                    <li>Den kopierten XPath in der Konfiguration unter <code>"xpath"</code> eintragen</li>
+                </ol>
+
+                <h3>Wichtige Hinweise</h3>
+                <ul>
+                    <li><strong>Sichern Sie Ihre Konfiguration regelmäßig.</strong> Nutzen Sie „Konfiguration herunterladen", bevor Sie Änderungen vornehmen oder das Plugin aktualisieren.</li>
+                    <li><strong>Deaktivieren statt deinstallieren.</strong> Beim Deinstallieren wird die gespeicherte Konfiguration gelöscht. Setzen Sie das Plugin stattdessen auf „Deaktiviert".</li>
+                    <li><strong>JSON-Validierung.</strong> Der Statusbalken unter dem Editor zeigt an, ob die JSON-Syntax korrekt ist. Bei Fehlern ist der Speichern-Button deaktiviert.</li>
+                </ul>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+[% MACRO jsinclude BLOCK %]
+
+[% Asset.js("lib/codemirror/codemirror.min.js") | $raw %]
+[% Asset.js("lib/codemirror/javascript.min.js") | $raw %]
+
+<script>
+(function() {
+    var textarea = document.getElementById('tourConfigInput');
+    var jsonStatus = document.getElementById('jsonStatus');
+    var saveBtn = document.getElementById('saveBtn');
+
+    var editor = CodeMirror.fromTextArea(textarea, {
+        mode: "application/json",
+        lineNumbers: true,
+        lineWrapping: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        indentUnit: 2,
+        tabSize: 2,
+        indentWithTabs: false
+    });
+
+    function validateJSON() {
+        var value = editor.getValue();
+        try {
+            JSON.parse(value);
+            jsonStatus.style.display = 'block';
+            jsonStatus.style.backgroundColor = '#d4edda';
+            jsonStatus.style.color = '#155724';
+            jsonStatus.style.border = '1px solid #c3e6cb';
+            jsonStatus.textContent = '✓ JSON ist gültig';
+            saveBtn.disabled = false;
+        } catch (e) {
+            jsonStatus.style.display = 'block';
+            jsonStatus.style.backgroundColor = '#f8d7da';
+            jsonStatus.style.color = '#721c24';
+            jsonStatus.style.border = '1px solid #f5c6cb';
+            jsonStatus.textContent = '✗ JSON-Fehler: ' + e.message;
+            saveBtn.disabled = true;
+        }
+    }
+
+    var originalContent = editor.getValue();
+    var isDirty = false;
+
+    function markDirty() {
+        isDirty = (editor.getValue() !== originalContent);
+    }
+
+    editor.on('change', function() {
+        editor.save();
+        markDirty();
+        validateJSON();
+    });
+
+    document.getElementById('downloadConfig').addEventListener('click', function() {
+        var blob = new Blob([editor.getValue()], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'kohatour-config.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    var uploadBtn = document.getElementById('uploadConfig');
+    var uploadFile = document.getElementById('uploadConfigFile');
+
+    uploadBtn.addEventListener('click', function() {
+        uploadFile.click();
+    });
+
+    uploadFile.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            editor.setValue(e.target.result);
+            markDirty();
+            validateJSON();
+        };
+        reader.readAsText(file);
+        this.value = '';
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', function(e) {
+        if (isDirty) {
+            if (!confirm('Sie haben ungespeicherte Änderungen. Wirklich verlassen?')) {
+                e.preventDefault();
+            }
+        }
+    });
+
+    validateJSON();
+})();
+</script>
+
+[% END %]
+
+[% INCLUDE 'intranet-bottom.inc' %]
