@@ -24,7 +24,7 @@ Minimum Koha version: **22.11**
 From the repository root:
 
 ```bash
-git archive HEAD:KohaTour/ -o KohaTour.kpz
+git archive --output=KohaTour.kpz --format=zip HEAD -- KohaTour
 ```
 
 ## Configuration
