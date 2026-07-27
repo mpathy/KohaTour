@@ -24,7 +24,7 @@ Minimum Koha version: **22.11**
 From the repository root:
 
 ```bash
-git archive --output=KohaTour.kpz --format=zip HEAD -- KohaTour
+git archive --output=KohaTour.kpz --format=zip HEAD -- Koha
 ```
 
 ## Configuration
@@ -86,7 +86,6 @@ The JSON editor ships with a default configuration including example tours. Stru
 ## Architecture
 
 ```
-KohaTour/
 ├── Makefile.PL
 ├── README.md
 └── Koha/Plugin/Com/MarkusMajer/
