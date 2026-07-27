@@ -21,8 +21,10 @@ Minimum Koha version: **22.11**
 
 ### Building the kpz from Git
 
+From the repository root:
+
 ```bash
-git archive --prefix=KohaTour/ HEAD:KohaTour/ -o KohaTour.kpz
+git archive HEAD:KohaTour/ -o KohaTour.kpz
 ```
 
 ## Configuration
