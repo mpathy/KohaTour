@@ -77,7 +77,7 @@
             <div class="alert alert-success">Configuration reset to default.</div>
             [% END %]
 
-            <form method="post">
+            <form method="post" id="configForm">
                 <input type="hidden" name="class" value="[% CLASS %]" />
                 <input type="hidden" name="method" value="[% METHOD %]" />
                 [% PROCESS 'csrf-token.inc' %]
@@ -92,30 +92,31 @@
 
                     <div id="jsonStatus"></div>
                 </fieldset>
+            </form>
 
-                <div class="action-toolbar">
-                    <div class="action-group">
-                        <input type="submit" name="save" id="saveBtn" value="Save" class="btn btn-primary" />
-                    </div>
-                    <div class="action-group">
-                        <input type="button" id="downloadConfig" value="Download configuration" class="btn btn-default" />
-                        <input type="button" id="uploadConfig" value="Upload configuration" class="btn btn-default" />
-                        <input type="file" id="uploadConfigFile" accept=".json" style="display: none;" />
-                    </div>
-                    <div class="action-group">
-                        <a href="/cgi-bin/koha/plugins/plugins-home.pl" id="cancelBtn" class="btn btn-default">Cancel</a>
-                    </div>
+            <div class="action-toolbar">
+                <div class="action-group">
+                    <input type="submit" name="save" id="saveBtn" value="Save" class="btn btn-primary" form="configForm" />
                 </div>
-            </form>
-
-            <form method="post" style="margin-top: 10px;">
-                <input type="hidden" name="class" value="[% CLASS %]" />
-                <input type="hidden" name="method" value="[% METHOD %]" />
-                [% PROCESS 'csrf-token.inc' %]
-                <input type="submit" name="reset_default" value="Reset configuration to demo data"
-                       class="btn btn-default"
-                       onclick="return confirm('Really reset to demo data? Your current configuration will be lost.');" />
-            </form>
+                <div class="action-group">
+                    <input type="button" id="downloadConfig" value="Download configuration" class="btn btn-default" />
+                    <input type="button" id="uploadConfig" value="Upload configuration" class="btn btn-default" />
+                    <input type="file" id="uploadConfigFile" accept=".json" style="display: none;" />
+                </div>
+                <div class="action-group">
+                    <a href="/cgi-bin/koha/plugins/plugins-home.pl" id="cancelBtn" class="btn btn-default">Cancel</a>
+                </div>
+                <div class="action-group">
+                    <form method="post" style="margin: 0;">
+                        <input type="hidden" name="class" value="[% CLASS %]" />
+                        <input type="hidden" name="method" value="[% METHOD %]" />
+                        [% PROCESS 'csrf-token.inc' %]
+                        <input type="submit" name="reset_default" value="Reset configuration to demo data"
+                               class="btn btn-default"
+                               onclick="return confirm('Really reset to demo data? Your current configuration will be lost.');" />
+                    </form>
+                </div>
+            </div>
 
             <fieldset style="margin-top: 40px;">
                 <legend>Reset tour reminders</legend>
@@ -167,8 +168,18 @@
                     <tbody>
                         <tr>
                             <td><strong>banner</strong></td>
-                            <td>Object with the banner UI texts: <code>notification</code>, <code>yes</code>, <code>no</code>, <code>donotask</code>. Change these to translate the banner into your language.</td>
-                            <td><code>"banner": { "yes": "Start" }</code></td>
+                            <td>Object with all UI texts. Change these to translate the plugin into your language:
+                                <ul style="margin-bottom:0;">
+                                    <li><code>notification</code> &mdash; message shown in the banner</li>
+                                    <li><code>yes</code> &mdash; label for the start button</li>
+                                    <li><code>no</code> &mdash; label for the dismiss button</li>
+                                    <li><code>donotask</code> &mdash; label for the permanent dismiss link</li>
+                                    <li><code>nextBtn</code> &mdash; &ldquo;Next&rdquo; button during the tour</li>
+                                    <li><code>prevBtn</code> &mdash; &ldquo;Previous&rdquo; button during the tour</li>
+                                    <li><code>doneBtn</code> &mdash; &ldquo;Done&rdquo; button on the last step</li>
+                                </ul>
+                            </td>
+                            <td><code>"banner": { "yes": "Start", "doneBtn": "Finish" }</code></td>
                         </tr>
                         <tr>
                             <td><strong>tours</strong></td>
@@ -191,9 +202,9 @@
                             <td><code>"steps": [{ ... }]</code></td>
                         </tr>
                         <tr>
-                            <td><strong>xpath</strong></td>
-                            <td>XPath expression that identifies the target element on the page. Easiest to obtain via browser DevTools (see below).</td>
-                            <td><code>"//*[@id='navmenulist']"</code></td>
+                            <td><strong>selector</strong></td>
+                            <td>CSS selector that identifies the target element on the page. Obtain via DevTools &rarr; Copy &rarr; Copy selector (see below).</td>
+                            <td><code>"#navmenulist"</code></td>
                         </tr>
                         <tr>
                             <td><strong>title</strong></td>
@@ -219,12 +230,12 @@
                     The output (e.g. <code>/cgi-bin/koha/mainpage.pl</code>) is the value to use in the <code>"path"</code> field.
                 </p>
 
-                <h3>Finding the XPath</h3>
+                <h3>Finding the CSS selector</h3>
                 <ol>
                     <li>Open the target page in the browser</li>
                     <li>Right-click the desired element &rarr; <strong>Inspect</strong></li>
-                    <li>In the DevTools panel: right-click the highlighted HTML tag &rarr; <strong>Copy</strong> &rarr; <strong>Copy XPath</strong></li>
-                    <li>Paste the XPath into the configuration under <code>"xpath"</code></li>
+                    <li>In the DevTools panel: right-click the highlighted HTML tag &rarr; <strong>Copy</strong> &rarr; <strong>Copy selector</strong></li>
+                    <li>Paste the selector into the configuration under <code>"selector"</code></li>
                 </ol>
 
                 <h3>Important notes</h3>

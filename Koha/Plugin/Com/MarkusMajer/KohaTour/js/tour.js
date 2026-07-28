@@ -19,13 +19,6 @@
     }
   }
 
-  function resolveXPath(xpath) {
-    var result = document.evaluate(
-      xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null
-    );
-    return result.singleNodeValue;
-  }
-
   function showBanner(steps, path, bannerTexts) {
     var texts = bannerTexts || {};
     var notification = texts.notification || 'A guided tour is available for this page. Would you like to start it?';
@@ -72,7 +65,7 @@
   function launchTour(steps, texts) {
     var driverSteps = [];
     for (var i = 0; i < steps.length; i++) {
-      var el = resolveXPath(steps[i].xpath);
+      var el = document.querySelector(steps[i].selector);
       if (el) {
         driverSteps.push({
           element: el,

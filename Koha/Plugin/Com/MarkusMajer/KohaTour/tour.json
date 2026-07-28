@@ -3,7 +3,7 @@
     "notification": "A guided tour is available for this page. Would you like to start it?",
     "yes": "Yes, please.",
     "no": "No, thanks.",
-    "donotask": "Don't ask again.",
+    "donotask": "Do not ask again.",
     "nextBtn": "Next",
     "prevBtn": "Previous",
     "doneBtn": "Done"
@@ -11,15 +11,15 @@
   "tours": [
     {
       "path": "/cgi-bin/koha/mainpage.pl",
-      "name": "Koha Staff Interface -Overview",
+      "name": "Koha Staff Interface - Overview",
       "steps": [
         {
-          "xpath": "//*[@id='navmenulist']",
+          "selector": "#navmenulist",
           "title": "Main navigation",
-          "body": "The navigation menu gives you access to all modules -from circulation to administration."
+          "body": "The navigation menu gives you access to all modules - from circulation to administration."
         },
         {
-          "xpath": "//*[@id='circ_circulation_issue']",
+          "selector": "#circ_circulation_issue",
           "title": "Circulation",
           "body": "Enter a patron card number or name here to start a checkout."
         }
@@ -30,12 +30,12 @@
       "name": "Acquisitions module introduction",
       "steps": [
         {
-          "xpath": "//*[@id='acqui_acqui-home_funds']",
+          "selector": "#acqui_acqui-home_funds",
           "title": "Budget overview",
           "body": "This table shows all active budgets and their current spending."
         },
         {
-          "xpath": "//*[@id='acqui_acqui-home_latesuppliers']",
+          "selector": "#acqui_acqui-home_latesuppliers",
           "title": "Late suppliers",
           "body": "Suppliers with overdue orders are listed here."
         }
