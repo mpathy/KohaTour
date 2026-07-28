@@ -70,7 +70,7 @@ sub configure {
 
     if ( $cgi->param('reset_default') ) {
         $self->store_data({ tour_config => $self->_default_config() });
-        print $cgi->redirect( $self->_configure_url() . '&reset_default=1' );
+        print $cgi->redirect( $self->_configure_url() . '&defaulted=1' );
         return;
     }
 
@@ -89,7 +89,7 @@ sub configure {
         tour_config   => $config,
         saved         => scalar $cgi->param('saved'),
         reset_done    => scalar $cgi->param('reset'),
-        reset_default => scalar $cgi->param('reset_default'),
+        reset_default => scalar $cgi->param('defaulted'),
     );
 
     print $cgi->header();

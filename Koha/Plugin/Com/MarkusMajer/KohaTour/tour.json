@@ -28,6 +28,11 @@
           "selector": "#container-main > div > div.col-md-9.order-md-2 > div:nth-child(1) > div:nth-child(2) > ul > li:nth-child(6) > a",
           "title": "Administration",
           "body": "System administration settings are managed here. Changes affect the entire Koha installation."
+        },
+        {
+          "selector": "#demo-element-that-does-not-exist",
+          "title": "Unavailable step (demo)",
+          "body": "This step intentionally targets a non-existing element to demonstrate the placeholder feature. In a real tour, this can happen when a user does not have the permissions to see certain modules or features. The tour continues normally - users with the required permissions will see the actual element highlighted instead of this placeholder."
         }
       ]
     },
