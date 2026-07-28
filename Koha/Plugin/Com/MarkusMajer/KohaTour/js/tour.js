@@ -80,19 +80,29 @@
   function launchTour(steps, texts) {
     log('Starting tour with ' + steps.length + ' step(s)...');
 
+    var unavailableText = texts.stepNotAvailable ||
+      'This step is not available in your current view. ' +
+      'This can happen when your user account does not have the permissions to see certain features. ' +
+      'For more details, open the developer console (F12).';
     var driverSteps = [];
-    var skipped = [];
+    var found = 0;
+    var unavailable = 0;
 
     for (var i = 0; i < steps.length; i++) {
       var step = steps[i];
+      var stepLabel = 'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '")';
+
       if (!step.selector) {
         warn(
-          'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '") has no "selector" field. ' +
+          stepLabel + ' has no "selector" field. ' +
           'Each step needs a CSS selector so KohaTour knows which element to highlight.\n' +
           '  How to get a selector: right-click the element in the browser > Inspect > ' +
           'right-click the tag in DevTools > Copy > Copy selector'
         );
-        skipped.push(i + 1);
+        driverSteps.push({
+          popover: { title: step.title || 'Step ' + (i + 1), description: unavailableText }
+        });
+        unavailable++;
         continue;
       }
 
@@ -101,13 +111,16 @@
         el = document.querySelector(step.selector);
       } catch (e) {
         error(
-          'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '") — invalid CSS selector:\n' +
+          stepLabel + ' — invalid CSS selector:\n' +
           '  "' + step.selector + '"\n' +
           '  Browser says: ' + e.message + '\n' +
           '  Tip: Make sure the selector is valid CSS. You can test it in the browser console:\n' +
           '  document.querySelector("' + step.selector.replace(/"/g, '\\"') + '")'
         );
-        skipped.push(i + 1);
+        driverSteps.push({
+          popover: { title: step.title || 'Step ' + (i + 1), description: unavailableText }
+        });
+        unavailable++;
         continue;
       }
 
@@ -116,28 +129,26 @@
           element: step.selector,
           popover: { title: step.title, description: step.body }
         });
-        log('Step ' + (i + 1) + ': "' + (step.title || 'untitled') + '" — element found.');
+        log(stepLabel + ' — element found.');
+        found++;
       } else {
         warn(
-          'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '") — element not found on this page.\n' +
+          stepLabel + ' — element not found on this page.\n' +
           '  Selector: "' + step.selector + '"\n' +
           '  This means the element does not exist (or not yet) on the current page.\n' +
+          '  The step will be shown as a placeholder so the tour can continue.\n' +
           '  Tip: You can test the selector in the browser console:\n' +
           '  document.querySelector("' + step.selector + '")\n' +
           '  If it returns null, the selector does not match anything.'
         );
-        skipped.push(i + 1);
+        driverSteps.push({
+          popover: { title: step.title || 'Step ' + (i + 1), description: unavailableText }
+        });
+        unavailable++;
       }
     }
 
-    if (skipped.length) {
-      warn(
-        skipped.length + ' of ' + steps.length + ' step(s) skipped ' +
-        '(step ' + skipped.join(', ') + '). See warnings above for details.'
-      );
-    }
-
-    if (!driverSteps.length) {
+    if (!found) {
       error(
         'Tour cannot start — none of the ' + steps.length + ' configured step(s) matched an element on this page.\n' +
         '  This usually means the CSS selectors in the tour configuration do not match the current page.\n\n' +
@@ -150,7 +161,11 @@
       return;
     }
 
-    log(driverSteps.length + ' of ' + steps.length + ' step(s) ready. Launching tour...');
+    if (unavailable) {
+      log(found + ' of ' + steps.length + ' step(s) found, ' + unavailable + ' shown as placeholder. Launching tour...');
+    } else {
+      log(found + ' of ' + steps.length + ' step(s) ready. Launching tour...');
+    }
 
     try {
       var d = window.driver.js.driver({

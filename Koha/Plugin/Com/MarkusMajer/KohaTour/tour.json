@@ -6,7 +6,8 @@
     "donotask": "Do not ask again.",
     "nextBtn": "Next",
     "prevBtn": "Previous",
-    "doneBtn": "Done"
+    "doneBtn": "Done",
+    "stepNotAvailable": "This step is not available in your current view."
   },
   "tours": [
     {
@@ -14,30 +15,35 @@
       "name": "Koha Staff Interface - Overview",
       "steps": [
         {
-          "selector": "#navmenulist",
-          "title": "Main navigation",
-          "body": "The navigation menu gives you access to all modules - from circulation to administration."
+          "selector": "#container-main > div > div.col-md-9.order-md-2 > div:nth-child(1) > div:nth-child(1) > ul > li:nth-child(1) > a",
+          "title": "Circulation",
+          "body": "This section provides access to check out, check in, renewals, holds, bookings, transfers, and overdue management."
         },
         {
-          "selector": "#circ_circulation_issue",
-          "title": "Circulation",
-          "body": "Enter a patron card number or name here to start a checkout."
+          "selector": "#container-main > div > div.col-md-9.order-md-2 > div:nth-child(1) > div:nth-child(2) > ul > li:nth-child(4) > a",
+          "title": "Reports",
+          "body": "The Reports module allows you to create, run, and manage custom SQL reports for statistical analysis and data export."
+        },
+        {
+          "selector": "#container-main > div > div.col-md-9.order-md-2 > div:nth-child(1) > div:nth-child(2) > ul > li:nth-child(6) > a",
+          "title": "Administration",
+          "body": "System administration settings are managed here. Changes affect the entire Koha installation."
         }
       ]
     },
     {
-      "path": "/cgi-bin/koha/acqui/acqui-home.pl",
-      "name": "Acquisitions module introduction",
+      "path": "/cgi-bin/koha/members/members-home.pl",
+      "name": "Patron search",
       "steps": [
         {
-          "selector": "#acqui_acqui-home_funds",
-          "title": "Budget overview",
-          "body": "This table shows all active budgets and their current spending."
+          "selector": "#search_patron_filter",
+          "title": "Search for a patron",
+          "body": "Enter a name, card number, or other identifier to search for a patron record."
         },
         {
-          "selector": "#acqui_acqui-home_latesuppliers",
-          "title": "Late suppliers",
-          "body": "Suppliers with overdue orders are listed here."
+          "selector": "#pat_member > div.main.container-fluid > div > div.col-md-2.order-sm-2.order-md-1 > aside > form > fieldset.brief > ol > li:nth-child(5) > select",
+          "title": "Library branch filter",
+          "body": "Use this dropdown to filter the patron search results by a specific library branch."
         }
       ]
     }

@@ -16,6 +16,8 @@
         border-radius: 4px;
         height: 400px;
         font-size: 13px;
+        resize: vertical;
+        overflow: auto;
     }
 
     #jsonStatus {
@@ -177,6 +179,7 @@
                                     <li><code>nextBtn</code> &mdash; &ldquo;Next&rdquo; button during the tour</li>
                                     <li><code>prevBtn</code> &mdash; &ldquo;Previous&rdquo; button during the tour</li>
                                     <li><code>doneBtn</code> &mdash; &ldquo;Done&rdquo; button on the last step</li>
+                                    <li><code>stepNotAvailable</code> &mdash; placeholder text shown when an element is not visible for the current user</li>
                                 </ul>
                             </td>
                             <td><code>"banner": { "yes": "Start", "doneBtn": "Finish" }</code></td>

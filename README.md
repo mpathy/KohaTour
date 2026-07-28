@@ -71,6 +71,7 @@ The JSON editor ships with a default configuration including example tours. Stru
 | `nextBtn` | "Next" button during the tour |
 | `prevBtn` | "Previous" button during the tour |
 | `doneBtn` | "Done" button on the last step |
+| `stepNotAvailable` | Placeholder text shown when an element is not visible for the current user |
 
 ### Tour fields
 
