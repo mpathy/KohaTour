@@ -4,7 +4,7 @@
 [% SET footerjs = 1 %]
 
 [% INCLUDE 'doc-head-open.inc' %]
-<title>KohaTour — Konfiguration</title>
+<title>KohaTour &mdash; Configuration</title>
 [% Asset.css("lib/codemirror/codemirror.min.css") | $raw %]
 <style>
     .json-editor-wrapper {
@@ -62,29 +62,28 @@
     <div class="row">
         <div class="col-md-12">
 
-            <h1>KohaTour — Konfiguration</h1>
+            <h1>KohaTour &mdash; Configuration</h1>
 
             [% IF saved %]
-            <div class="alert alert-success">Konfiguration gespeichert.</div>
+            <div class="alert alert-success">Configuration saved.</div>
             [% END %]
             [% IF reset_done %]
             <div class="alert alert-success">
-                „Nie wieder fragen" wurde für alle Rechner zurückgesetzt.
-                Beim nächsten Seitenaufruf wird der Tour-Banner wieder angezeigt.
+                &ldquo;Don&rsquo;t ask again&rdquo; has been reset for all machines.
+                The tour banner will reappear on the next page load.
             </div>
             [% END %]
             [% IF reset_default %]
-            <div class="alert alert-success">Konfiguration auf Standard zurückgesetzt.</div>
+            <div class="alert alert-success">Configuration reset to default.</div>
             [% END %]
 
-            <!-- ── Tour-Konfiguration (JSON-Editor) ── -->
             <form method="post">
                 <input type="hidden" name="class" value="[% CLASS %]" />
                 <input type="hidden" name="method" value="[% METHOD %]" />
 
                 <fieldset>
-                    <legend>Tour-Konfiguration (JSON)</legend>
-                    <p>Definieren Sie hier die Touren und deren Schritte:</p>
+                    <legend>Tour configuration (JSON)</legend>
+                    <p>Define your tours and their steps here:</p>
 
                     <div class="json-editor-wrapper">
                         <textarea name="tour_config" id="tourConfigInput">[% tour_config | html %]</textarea>
@@ -95,124 +94,127 @@
 
                 <div class="action-toolbar">
                     <div class="action-group">
-                        <input type="submit" name="save" id="saveBtn" value="Speichern" class="btn btn-primary" />
+                        <input type="submit" name="save" id="saveBtn" value="Save" class="btn btn-primary" />
                     </div>
                     <div class="action-group">
-                        <input type="submit" name="reset_default" value="Auf Standard zurücksetzen"
+                        <input type="submit" name="reset_default" value="Reset to default"
                                class="btn btn-default"
-                               onclick="return confirm('Wirklich auf die Standardkonfiguration zurücksetzen? Ihre aktuelle Konfiguration geht verloren.');" />
+                               onclick="return confirm('Really reset to the default configuration? Your current configuration will be lost.');" />
                     </div>
                     <div class="action-group">
-                        <input type="button" id="downloadConfig" value="Konfiguration herunterladen" class="btn btn-default" />
-                        <input type="button" id="uploadConfig" value="Konfiguration hochladen" class="btn btn-default" />
+                        <input type="button" id="downloadConfig" value="Download configuration" class="btn btn-default" />
+                        <input type="button" id="uploadConfig" value="Upload configuration" class="btn btn-default" />
                         <input type="file" id="uploadConfigFile" accept=".json" style="display: none;" />
                     </div>
                     <div class="action-group">
-                        <a href="/cgi-bin/koha/plugins/plugins-home.pl" id="cancelBtn" class="btn btn-default">Abbrechen</a>
+                        <a href="/cgi-bin/koha/plugins/plugins-home.pl" id="cancelBtn" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </form>
 
-            <!-- ── „Nie wieder fragen" zurücksetzen ── -->
             <fieldset style="margin-top: 40px;">
-                <legend>Tour-Erinnerung zurücksetzen</legend>
+                <legend>Reset tour reminders</legend>
                 <p>
-                    Wenn ein Benutzer auf einem Rechner <strong>„Nie wieder fragen"</strong> geklickt hat,
-                    wird der Tour-Banner auf diesem Rechner dauerhaft ausgeblendet (gespeichert im Browser-LocalStorage).
+                    When a user clicks <strong>&ldquo;Don&rsquo;t ask again&rdquo;</strong> on a machine,
+                    the tour banner is permanently hidden on that machine (stored in the browser&rsquo;s localStorage).
                 </p>
                 <p>
-                    <strong>Zurücksetzen für alle Rechner:</strong>
-                    Dieser Button setzt einen globalen Zeitstempel in der Koha-Datenbank.
-                    Beim nächsten Seitenaufruf erkennen alle Browser, dass ihr lokaler Eintrag veraltet ist,
-                    und blenden den Banner wieder ein.
+                    <strong>Reset for all machines:</strong>
+                    This button sets a global timestamp in the Koha database.
+                    On the next page load, all browsers will detect that their local entry is outdated
+                    and show the banner again.
                 </p>
                 <p>
-                    <strong>Zurücksetzen für einen einzelnen Rechner / Browser:</strong>
-                    Browserdaten für diese Website löschen (Einstellungen → Datenschutz → Website-Daten löschen).
+                    <strong>Reset for a single machine / browser:</strong>
+                    Clear the site data in the browser settings (Settings &rarr; Privacy &rarr; Clear site data).
                 </p>
 
                 <form method="post" style="margin-top: 1rem;">
                     <input type="hidden" name="class" value="[% CLASS %]" />
                     <input type="hidden" name="method" value="[% METHOD %]" />
                     <button type="submit" name="reset_never" value="1" class="btn btn-warning"
-                            onclick="return confirm('Wirklich für alle Rechner zurücksetzen?');">
-                        „Nie wieder fragen" für alle Rechner zurücksetzen
+                            onclick="return confirm('Really reset for all machines?');">
+                        Reset &ldquo;Don&rsquo;t ask again&rdquo; for all machines
                     </button>
                 </form>
             </fieldset>
 
-            <!-- ── Dokumentation ── -->
             <fieldset style="margin-top: 40px;">
-                <legend>Dokumentation</legend>
+                <legend>Documentation</legend>
 
-                <h3>So funktioniert KohaTour</h3>
+                <h3>How KohaTour works</h3>
                 <p>
-                    KohaTour blendet auf jeder Seite des Staff Interface einen Banner ein,
-                    wenn in der Konfiguration eine Tour für den aktuellen URL-Pfad definiert ist.
-                    Die Benutzer können die Tour starten, ablehnen oder dauerhaft ausblenden.
+                    KohaTour displays a banner on every staff interface page
+                    where a tour is configured for the current URL path.
+                    Users can start the tour, dismiss it, or hide it permanently.
                 </p>
 
-                <h3>JSON-Struktur</h3>
+                <h3>JSON structure</h3>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th style="width: 15%;">Feld</th>
-                            <th style="width: 50%;">Beschreibung</th>
-                            <th style="width: 35%;">Beispiel</th>
+                            <th style="width: 15%;">Field</th>
+                            <th style="width: 50%;">Description</th>
+                            <th style="width: 35%;">Example</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td><strong>banner</strong></td>
+                            <td>Object with the banner UI texts: <code>notification</code>, <code>yes</code>, <code>no</code>, <code>donotask</code>. Change these to translate the banner into your language.</td>
+                            <td><code>"banner": { "yes": "Start" }</code></td>
+                        </tr>
+                        <tr>
                             <td><strong>tours</strong></td>
-                            <td>Array aller Touren. Jede Tour ist einer bestimmten Seite zugeordnet.</td>
+                            <td>Array of all tours. Each tour is assigned to a specific page.</td>
                             <td><code>"tours": [{ ... }, { ... }]</code></td>
                         </tr>
                         <tr>
                             <td><strong>path</strong></td>
-                            <td>Der URL-Pfad der Zielseite (ohne Query-Parameter). Muss exakt mit <code>window.location.pathname</code> übereinstimmen.</td>
+                            <td>URL path of the target page (without query parameters). Must match <code>window.location.pathname</code> exactly.</td>
                             <td><code>"/cgi-bin/koha/mainpage.pl"</code></td>
                         </tr>
                         <tr>
                             <td><strong>name</strong></td>
-                            <td>Ein sprechender Name für die Tour (wird aktuell nur in der Konfiguration angezeigt).</td>
-                            <td><code>"Einführung Erwerbungsmodul"</code></td>
+                            <td>A descriptive name for the tour (currently only shown in the configuration).</td>
+                            <td><code>"Acquisitions introduction"</code></td>
                         </tr>
                         <tr>
                             <td><strong>steps</strong></td>
-                            <td>Array der einzelnen Tour-Schritte. Jeder Schritt hebt ein Element auf der Seite hervor.</td>
+                            <td>Array of individual tour steps. Each step highlights an element on the page.</td>
                             <td><code>"steps": [{ ... }]</code></td>
                         </tr>
                         <tr>
                             <td><strong>xpath</strong></td>
-                            <td>XPath-Ausdruck, der das Ziel-Element auf der Seite identifiziert. Am einfachsten per Browser-DevTools ermitteln (siehe unten).</td>
+                            <td>XPath expression that identifies the target element on the page. Easiest to obtain via browser DevTools (see below).</td>
                             <td><code>"//*[@id='navmenulist']"</code></td>
                         </tr>
                         <tr>
                             <td><strong>title</strong></td>
-                            <td>Überschrift des Tour-Schritts (wird im Popover fett dargestellt).</td>
-                            <td><code>"Hauptnavigation"</code></td>
+                            <td>Heading of the tour step (shown bold in the popover).</td>
+                            <td><code>"Main navigation"</code></td>
                         </tr>
                         <tr>
                             <td><strong>body</strong></td>
-                            <td>Beschreibungstext des Tour-Schritts.</td>
-                            <td><code>"Die Navigationsleiste gibt Ihnen Zugang zu allen Modulen."</code></td>
+                            <td>Description text of the tour step.</td>
+                            <td><code>"The navigation menu gives you access to all modules."</code></td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h3>XPath ermitteln (ohne Programmierkenntnisse)</h3>
+                <h3>Finding the XPath</h3>
                 <ol>
-                    <li>Zielseite im Browser öffnen</li>
-                    <li>Rechtsklick auf das gewünschte Element → <strong>Untersuchen</strong></li>
-                    <li>Im DevTools-Panel: Rechtsklick auf den markierten HTML-Tag → <strong>Copy</strong> → <strong>Copy XPath</strong></li>
-                    <li>Den kopierten XPath in der Konfiguration unter <code>"xpath"</code> eintragen</li>
+                    <li>Open the target page in the browser</li>
+                    <li>Right-click the desired element &rarr; <strong>Inspect</strong></li>
+                    <li>In the DevTools panel: right-click the highlighted HTML tag &rarr; <strong>Copy</strong> &rarr; <strong>Copy XPath</strong></li>
+                    <li>Paste the XPath into the configuration under <code>"xpath"</code></li>
                 </ol>
 
-                <h3>Wichtige Hinweise</h3>
+                <h3>Important notes</h3>
                 <ul>
-                    <li><strong>Sichern Sie Ihre Konfiguration regelmäßig.</strong> Nutzen Sie „Konfiguration herunterladen", bevor Sie Änderungen vornehmen oder das Plugin aktualisieren.</li>
-                    <li><strong>Deaktivieren statt deinstallieren.</strong> Beim Deinstallieren wird die gespeicherte Konfiguration gelöscht. Setzen Sie das Plugin stattdessen auf „Deaktiviert".</li>
-                    <li><strong>JSON-Validierung.</strong> Der Statusbalken unter dem Editor zeigt an, ob die JSON-Syntax korrekt ist. Bei Fehlern ist der Speichern-Button deaktiviert.</li>
+                    <li><strong>Back up your configuration regularly.</strong> Use &ldquo;Download configuration&rdquo; before making changes or updating the plugin.</li>
+                    <li><strong>Disable instead of uninstall.</strong> Uninstalling the plugin deletes the stored configuration. Set the plugin to &ldquo;Disabled&rdquo; instead.</li>
+                    <li><strong>JSON validation.</strong> The status bar below the editor shows whether the JSON syntax is valid. The Save button is disabled when there are errors.</li>
                 </ul>
             </fieldset>
 
@@ -250,14 +252,14 @@
             jsonStatus.style.backgroundColor = '#d4edda';
             jsonStatus.style.color = '#155724';
             jsonStatus.style.border = '1px solid #c3e6cb';
-            jsonStatus.textContent = '✓ JSON ist gültig';
+            jsonStatus.textContent = '✓ JSON is valid';
             saveBtn.disabled = false;
         } catch (e) {
             jsonStatus.style.display = 'block';
             jsonStatus.style.backgroundColor = '#f8d7da';
             jsonStatus.style.color = '#721c24';
             jsonStatus.style.border = '1px solid #f5c6cb';
-            jsonStatus.textContent = '✗ JSON-Fehler: ' + e.message;
+            jsonStatus.textContent = '✗ JSON error: ' + e.message;
             saveBtn.disabled = true;
         }
     }
@@ -310,7 +312,7 @@
 
     document.getElementById('cancelBtn').addEventListener('click', function(e) {
         if (isDirty) {
-            if (!confirm('Sie haben ungespeicherte Änderungen. Wirklich verlassen?')) {
+            if (!confirm('You have unsaved changes. Are you sure you want to leave?')) {
                 e.preventDefault();
             }
         }
