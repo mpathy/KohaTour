@@ -3,7 +3,10 @@
     "notification": "A guided tour is available for this page. Would you like to start it?",
     "yes": "Yes, please.",
     "no": "No, thanks.",
-    "donotask": "Don't ask again."
+    "donotask": "Don't ask again.",
+    "nextBtn": "Next",
+    "prevBtn": "Previous",
+    "doneBtn": "Done"
   },
   "tours": [
     {

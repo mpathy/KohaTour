@@ -58,7 +58,7 @@
 
     document.getElementById('kt-yes').addEventListener('click', function () {
       banner.remove();
-      launchTour(steps);
+      launchTour(steps, texts);
     });
     document.getElementById('kt-no').addEventListener('click', function () {
       banner.remove();
@@ -69,7 +69,7 @@
     });
   }
 
-  function launchTour(steps) {
+  function launchTour(steps, texts) {
     var driverSteps = [];
     for (var i = 0; i < steps.length; i++) {
       var el = resolveXPath(steps[i].xpath);
@@ -85,9 +85,9 @@
 
     var d = window.driver.js.driver({
       showProgress: true,
-      nextBtnText:  'Weiter →',
-      prevBtnText:  '← Zurück',
-      doneBtnText:  'Fertig',
+      nextBtnText:  texts.nextBtn  || 'Next',
+      prevBtnText:  texts.prevBtn  || 'Previous',
+      doneBtnText:  texts.doneBtn  || 'Done',
       steps:        driverSteps
     });
     d.drive();

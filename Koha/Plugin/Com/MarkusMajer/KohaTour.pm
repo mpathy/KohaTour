@@ -26,9 +26,9 @@ sub new {
 
 sub intranet_js {
     my ($self) = @_;
-    my $js_url      = $self->get_plugin_http_path() . '/js/tour.js';
     my $config      = $self->retrieve_data('tour_config') // '{"tours":[]}';
     my $reset_token = $self->retrieve_data('reset_token') // '0';
+    my $tour_js     = $self->_read_file('js/tour.js');
 
     $config =~ s{</}{<\\/}g;
 
@@ -39,8 +39,23 @@ sub intranet_js {
           window.KOHA_TOUR_CONFIG      = $config;
           window.KOHA_TOUR_RESET_TOKEN = '$reset_token';
         </script>
-        <script src="$js_url"></script>
+        <script>
+        $tour_js
+        </script>
         JS
+}
+
+sub _read_file {
+    my ($self, $rel_path) = @_;
+    my $path = $self->mbf_path($rel_path);
+    if ( -f $path ) {
+        open my $fh, '<:encoding(UTF-8)', $path or return '';
+        local $/;
+        my $content = <$fh>;
+        close $fh;
+        return $content;
+    }
+    return '';
 }
 
 sub configure {
