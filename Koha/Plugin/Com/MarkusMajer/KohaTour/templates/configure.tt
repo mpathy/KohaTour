@@ -16,8 +16,6 @@
         border-radius: 4px;
         height: 400px;
         font-size: 13px;
-        resize: vertical;
-        overflow: auto;
     }
 
     #jsonStatus {
@@ -134,7 +132,9 @@
                 </p>
                 <p>
                     <strong>Reset for a single machine / browser:</strong>
-                    Clear the site data in the browser settings (Settings &rarr; Privacy &rarr; Clear site data).
+                    Click the icon next to the URL in the address bar (usually a lock or info icon),
+                    then select <em>Clear site data</em> or <em>Delete cookies and site data</em>.
+                    This only affects data for this specific site, not your other browsing data.
                 </p>
 
                 <form method="post" style="margin-top: 1rem;">
