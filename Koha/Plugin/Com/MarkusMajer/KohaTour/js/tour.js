@@ -3,6 +3,21 @@
 
   var STORAGE_PREFIX      = 'koha_tour_never_';
   var STORAGE_RESET_TOKEN = 'koha_tour_reset_token';
+  var LOG_PREFIX          = '%c[KohaTour]%c ';
+  var LOG_STYLE           = 'color:#f0a500;font-weight:bold';
+  var LOG_RESET           = 'color:inherit;font-weight:normal';
+
+  function log(msg) {
+    console.log(LOG_PREFIX + msg, LOG_STYLE, LOG_RESET);
+  }
+
+  function warn(msg) {
+    console.warn(LOG_PREFIX + msg, LOG_STYLE, LOG_RESET);
+  }
+
+  function error(msg) {
+    console.error(LOG_PREFIX + msg, LOG_STYLE, LOG_RESET);
+  }
 
   function storageKey(path) {
     return STORAGE_PREFIX + btoa(path);
@@ -63,33 +78,104 @@
   }
 
   function launchTour(steps, texts) {
+    log('Starting tour with ' + steps.length + ' step(s)...');
+
     var driverSteps = [];
+    var skipped = [];
+
     for (var i = 0; i < steps.length; i++) {
-      var el = document.querySelector(steps[i].selector);
+      var step = steps[i];
+      if (!step.selector) {
+        warn(
+          'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '") has no "selector" field. ' +
+          'Each step needs a CSS selector so KohaTour knows which element to highlight.\n' +
+          '  How to get a selector: right-click the element in the browser > Inspect > ' +
+          'right-click the tag in DevTools > Copy > Copy selector'
+        );
+        skipped.push(i + 1);
+        continue;
+      }
+
+      var el;
+      try {
+        el = document.querySelector(step.selector);
+      } catch (e) {
+        error(
+          'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '") — invalid CSS selector:\n' +
+          '  "' + step.selector + '"\n' +
+          '  Browser says: ' + e.message + '\n' +
+          '  Tip: Make sure the selector is valid CSS. You can test it in the browser console:\n' +
+          '  document.querySelector("' + step.selector.replace(/"/g, '\\"') + '")'
+        );
+        skipped.push(i + 1);
+        continue;
+      }
+
       if (el) {
         driverSteps.push({
-          element: el,
-          popover: { title: steps[i].title, description: steps[i].body }
+          element: step.selector,
+          popover: { title: step.title, description: step.body }
         });
+        log('Step ' + (i + 1) + ': "' + (step.title || 'untitled') + '" — element found.');
+      } else {
+        warn(
+          'Step ' + (i + 1) + ' ("' + (step.title || 'untitled') + '") — element not found on this page.\n' +
+          '  Selector: "' + step.selector + '"\n' +
+          '  This means the element does not exist (or not yet) on the current page.\n' +
+          '  Tip: You can test the selector in the browser console:\n' +
+          '  document.querySelector("' + step.selector + '")\n' +
+          '  If it returns null, the selector does not match anything.'
+        );
+        skipped.push(i + 1);
       }
     }
 
-    if (!driverSteps.length) return;
+    if (skipped.length) {
+      warn(
+        skipped.length + ' of ' + steps.length + ' step(s) skipped ' +
+        '(step ' + skipped.join(', ') + '). See warnings above for details.'
+      );
+    }
 
-    var d = window.driver.js.driver({
-      showProgress: true,
-      nextBtnText:  texts.nextBtn  || 'Next',
-      prevBtnText:  texts.prevBtn  || 'Previous',
-      doneBtnText:  texts.doneBtn  || 'Done',
-      steps:        driverSteps
-    });
-    d.drive();
+    if (!driverSteps.length) {
+      error(
+        'Tour cannot start — none of the ' + steps.length + ' configured step(s) matched an element on this page.\n' +
+        '  This usually means the CSS selectors in the tour configuration do not match the current page.\n\n' +
+        '  To fix this:\n' +
+        '  1. Right-click the element you want to highlight > Inspect\n' +
+        '  2. In DevTools: right-click the highlighted HTML tag > Copy > Copy selector\n' +
+        '  3. Paste the selector into your tour configuration under "selector"\n' +
+        '  4. Save the configuration and reload the page'
+      );
+      return;
+    }
+
+    log(driverSteps.length + ' of ' + steps.length + ' step(s) ready. Launching tour...');
+
+    try {
+      var d = window.driver.js.driver({
+        showProgress: true,
+        nextBtnText:  texts.nextBtn  || 'Next',
+        prevBtnText:  texts.prevBtn  || 'Previous',
+        doneBtnText:  texts.doneBtn  || 'Done',
+        steps:        driverSteps
+      });
+      d.drive();
+    } catch (e) {
+      error(
+        'Failed to start the tour overlay (driver.js).\n' +
+        '  Error: ' + e.message + '\n' +
+        '  This might mean driver.js did not load correctly from the CDN.\n' +
+        '  Check if https://cdn.jsdelivr.net is reachable from this server.'
+      );
+    }
   }
 
   function init() {
     applyResetToken();
 
     var path = window.location.pathname;
+
     if (localStorage.getItem(storageKey(path)) === 'never') return;
 
     var config = window.KOHA_TOUR_CONFIG;
@@ -102,8 +188,13 @@
         break;
       }
     }
+
     if (!match || !match.steps || !match.steps.length) return;
 
+    log(
+      'Tour available: "' + (match.name || 'unnamed') + '" (' + match.steps.length + ' steps) ' +
+      'for path: ' + path
+    );
     showBanner(match.steps, path, config.banner);
   }
 
