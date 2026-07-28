@@ -80,6 +80,7 @@
             <form method="post">
                 <input type="hidden" name="class" value="[% CLASS %]" />
                 <input type="hidden" name="method" value="[% METHOD %]" />
+                [% PROCESS 'csrf-token.inc' %]
 
                 <fieldset>
                     <legend>Tour configuration (JSON)</legend>
@@ -97,11 +98,6 @@
                         <input type="submit" name="save" id="saveBtn" value="Save" class="btn btn-primary" />
                     </div>
                     <div class="action-group">
-                        <input type="submit" name="reset_default" value="Reset to default"
-                               class="btn btn-default"
-                               onclick="return confirm('Really reset to the default configuration? Your current configuration will be lost.');" />
-                    </div>
-                    <div class="action-group">
                         <input type="button" id="downloadConfig" value="Download configuration" class="btn btn-default" />
                         <input type="button" id="uploadConfig" value="Upload configuration" class="btn btn-default" />
                         <input type="file" id="uploadConfigFile" accept=".json" style="display: none;" />
@@ -110,6 +106,15 @@
                         <a href="/cgi-bin/koha/plugins/plugins-home.pl" id="cancelBtn" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
+            </form>
+
+            <form method="post" style="margin-top: 10px;">
+                <input type="hidden" name="class" value="[% CLASS %]" />
+                <input type="hidden" name="method" value="[% METHOD %]" />
+                [% PROCESS 'csrf-token.inc' %]
+                <input type="submit" name="reset_default" value="Reset configuration to demo data"
+                       class="btn btn-default"
+                       onclick="return confirm('Really reset to demo data? Your current configuration will be lost.');" />
             </form>
 
             <fieldset style="margin-top: 40px;">
@@ -132,6 +137,7 @@
                 <form method="post" style="margin-top: 1rem;">
                     <input type="hidden" name="class" value="[% CLASS %]" />
                     <input type="hidden" name="method" value="[% METHOD %]" />
+                    [% PROCESS 'csrf-token.inc' %]
                     <button type="submit" name="reset_never" value="1" class="btn btn-warning"
                             onclick="return confirm('Really reset for all machines?');">
                         Reset &ldquo;Don&rsquo;t ask again&rdquo; for all machines
