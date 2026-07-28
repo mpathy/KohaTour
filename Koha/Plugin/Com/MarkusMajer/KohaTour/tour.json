@@ -8,12 +8,12 @@
   "tours": [
     {
       "path": "/cgi-bin/koha/mainpage.pl",
-      "name": "Koha Staff Interface — Overview",
+      "name": "Koha Staff Interface -Overview",
       "steps": [
         {
           "xpath": "//*[@id='navmenulist']",
           "title": "Main navigation",
-          "body": "The navigation menu gives you access to all modules — from circulation to administration."
+          "body": "The navigation menu gives you access to all modules -from circulation to administration."
         },
         {
           "xpath": "//*[@id='circ_circulation_issue']",

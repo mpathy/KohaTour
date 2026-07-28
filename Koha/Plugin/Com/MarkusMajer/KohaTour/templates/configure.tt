@@ -202,6 +202,17 @@
                     </tbody>
                 </table>
 
+                <h3>Finding the page path</h3>
+                <p>
+                    The <code>path</code> field must match the page&rsquo;s URL path exactly.
+                    To find it, open the target page, press <strong>F12</strong> to open DevTools,
+                    switch to the <strong>Console</strong> tab, and type:
+                </p>
+                <pre style="background:#f5f5f5; padding:8px 12px; border:1px solid #ddd; border-radius:4px; display:inline-block;"><code>window.location.pathname</code></pre>
+                <p style="margin-top:8px;">
+                    The output (e.g. <code>/cgi-bin/koha/mainpage.pl</code>) is the value to use in the <code>"path"</code> field.
+                </p>
+
                 <h3>Finding the XPath</h3>
                 <ol>
                     <li>Open the target page in the browser</li>
@@ -252,14 +263,14 @@
             jsonStatus.style.backgroundColor = '#d4edda';
             jsonStatus.style.color = '#155724';
             jsonStatus.style.border = '1px solid #c3e6cb';
-            jsonStatus.textContent = '✓ JSON is valid';
+            jsonStatus.innerHTML = '&#10003; JSON is valid';
             saveBtn.disabled = false;
         } catch (e) {
             jsonStatus.style.display = 'block';
             jsonStatus.style.backgroundColor = '#f8d7da';
             jsonStatus.style.color = '#721c24';
             jsonStatus.style.border = '1px solid #f5c6cb';
-            jsonStatus.textContent = '✗ JSON error: ' + e.message;
+            jsonStatus.innerHTML = '&#10007; JSON error: ' + e.message;
             saveBtn.disabled = true;
         }
     }

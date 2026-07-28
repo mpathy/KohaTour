@@ -31,7 +31,7 @@
     var notification = texts.notification || 'A guided tour is available for this page. Would you like to start it?';
     var yesLabel     = texts.yes         || 'Yes, please.';
     var noLabel      = texts.no          || 'No, thanks.';
-    var neverLabel   = texts.donotask    || 'Don't ask again.';
+    var neverLabel   = texts.donotask    || 'Do not ask again.';
 
     var banner = document.createElement('div');
     banner.id = 'koha-tour-banner';
