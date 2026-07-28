@@ -34,6 +34,11 @@ sub intranet_js {
 
     return <<~JS;
         <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js\@1.3.1/dist/driver.css" />
+        <style>
+          .driver-popover { max-width: 500px; width: auto; }
+          .driver-popover a { color: #2563eb; text-decoration: underline; }
+          .driver-popover a:hover { color: #1d4ed8; }
+        </style>
         <script src="https://cdn.jsdelivr.net/npm/driver.js\@1.3.1/dist/driver.js.iife.js"></script>
         <script>
           window.KOHA_TOUR_CONFIG      = $config;

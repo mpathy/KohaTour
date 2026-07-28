@@ -19,6 +19,12 @@
     console.error(LOG_PREFIX + msg, LOG_STYLE, LOG_RESET);
   }
 
+  function linkify(text) {
+    if (!text) return text;
+    return text.replace(/(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+  }
+
   function storageKey(path) {
     return STORAGE_PREFIX + btoa(path);
   }
@@ -127,7 +133,7 @@
       if (el) {
         driverSteps.push({
           element: step.selector,
-          popover: { title: step.title, description: step.body }
+          popover: { title: linkify(step.title), description: linkify(step.body) }
         });
         log(stepLabel + ' — element found.');
         found++;
