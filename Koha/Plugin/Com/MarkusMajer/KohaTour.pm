@@ -2,7 +2,7 @@ package Koha::Plugin::Com::MarkusMajer::KohaTour;
 
 use Modern::Perl;
 use base qw(Koha::Plugins::Base);
-use JSON qw(encode_json);
+
 
 our $VERSION = '0.2.0';
 

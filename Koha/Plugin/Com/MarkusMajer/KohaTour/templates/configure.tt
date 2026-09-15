@@ -211,12 +211,12 @@
                         </tr>
                         <tr>
                             <td><strong>title</strong></td>
-                            <td>Heading of the tour step (shown bold in the popover).</td>
+                            <td>Heading of the tour step (shown bold in the popover). URLs are automatically converted to clickable links.</td>
                             <td><code>"Main navigation"</code></td>
                         </tr>
                         <tr>
                             <td><strong>body</strong></td>
-                            <td>Description text of the tour step.</td>
+                            <td>Description text of the tour step. URLs are automatically converted to clickable links.</td>
                             <td><code>"The navigation menu gives you access to all modules."</code></td>
                         </tr>
                     </tbody>
@@ -246,6 +246,7 @@
                     <li><strong>Back up your configuration regularly.</strong> Use &ldquo;Download configuration&rdquo; before making changes or updating the plugin.</li>
                     <li><strong>Disable instead of uninstall.</strong> Uninstalling the plugin deletes the stored configuration. Set the plugin to &ldquo;Disabled&rdquo; instead.</li>
                     <li><strong>JSON validation.</strong> The status bar below the editor shows whether the JSON syntax is valid. The Save button is disabled when there are errors.</li>
+                    <li><strong>Console diagnostics.</strong> When a tour does not start or steps are missing, open the browser console (F12) and look for messages with the <code>[KohaTour]</code> prefix. They show which selectors were found, which are missing, and how to fix them.</li>
                 </ul>
             </fieldset>
 

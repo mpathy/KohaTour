@@ -1,4 +1,4 @@
-# Mockup / Prototyp-Dateien (nicht Teil des Plugins)
+# Mockup / prototype files (not part of the plugin)
 tour.html
 index.html
 tour.yaml
@@ -8,5 +8,5 @@ tour.yaml
 .vstags
 CLAUDE.md
 
-# Build-Artefakte
+# Build artifacts
 *.kpz

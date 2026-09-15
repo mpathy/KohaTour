@@ -7,9 +7,11 @@ Koha plugin for guided tours in the staff interface. Library staff and trainers 
 - **Tour banner** on every staff page that has a tour configured
 - **JSON configuration** in the plugin admin (CodeMirror editor with live validation)
 - **CSS selector targeting** - target elements are identified via "Copy selector" from the browser DevTools
+- **Graceful handling of missing elements** - steps targeting elements not visible to the current user (e.g. due to permissions) are shown as placeholders so the tour continues
+- **Automatic URL linking** - URLs in step titles and descriptions are automatically converted to clickable links
 - **"Don't ask again"** - users can permanently dismiss the banner per page (localStorage); admins can reset this globally
 - **Export/Import** - download and upload configuration as a JSON file
-- **Fully customizable texts** - all UI strings (banner, tour buttons) are part of the JSON configuration
+- **Fully customizable texts** - all UI strings (banner, tour buttons, placeholder text) are part of the JSON configuration
 
 ## Installation
 
@@ -42,7 +44,8 @@ The JSON editor ships with a default configuration including example tours. Stru
     "donotask": "Do not ask again.",
     "nextBtn": "Next",
     "prevBtn": "Previous",
-    "doneBtn": "Done"
+    "doneBtn": "Done",
+    "stepNotAvailable": "This step is not available in your current view."
   },
   "tours": [
     {
@@ -80,8 +83,8 @@ The JSON editor ships with a default configuration including example tours. Stru
 | `path` | URL path of the target page (exact match against `window.location.pathname`) |
 | `name` | Display name of the tour (used in the configuration) |
 | `selector` | CSS selector targeting the element (via DevTools - Copy selector) |
-| `title` | Heading of the tour step |
-| `body` | Description text of the tour step |
+| `title` | Heading of the tour step (URLs are automatically converted to links) |
+| `body` | Description text of the tour step (URLs are automatically converted to links) |
 
 ### Finding the CSS selector
 
@@ -99,6 +102,13 @@ window.location.pathname
 ```
 
 The output (e.g. `/cgi-bin/koha/mainpage.pl`) is the value to use in the `"path"` field.
+
+### Important notes
+
+- **Back up your configuration regularly.** Use "Download configuration" before making changes or updating the plugin.
+- **Disable instead of uninstall.** Uninstalling the plugin deletes the stored configuration. Set the plugin to "Disabled" instead.
+- **JSON validation.** The status bar below the editor shows whether the JSON syntax is valid. The Save button is disabled when there are errors.
+- **Console diagnostics.** When a tour does not start or steps are missing, open the browser console (F12) and look for messages with the `[KohaTour]` prefix. They show which selectors were found, which are missing, and how to fix them.
 
 ## Architecture
 
@@ -120,7 +130,7 @@ Koha/Plugin/Com/MarkusMajer/
 
 ### tour.js
 
-Runs on every staff page. Compares `window.location.pathname` against configured paths. On match, a banner is displayed with texts from the `banner` object in the configuration. Uses [driver.js](https://driverjs.com/) for the tour overlay with CSS selector resolution.
+Runs on every staff page. Compares `window.location.pathname` against configured paths. On match, a banner is displayed with texts from the `banner` object in the configuration. Uses [driver.js](https://driverjs.com/) for the tour overlay with CSS selector resolution. Steps targeting elements not found on the page (e.g. due to user permissions) are shown as centered placeholder popovers so the tour can continue. URLs in step texts are automatically converted to clickable links (`target="_blank"`). Detailed diagnostic messages are logged to the browser console (`[KohaTour]` prefix) to help with troubleshooting.
 
 The "don't ask again" state is stored per path in `localStorage` (`koha_tour_never_` + Base64 of the path). A server-side reset token allows admins to globally invalidate all browsers.
 
